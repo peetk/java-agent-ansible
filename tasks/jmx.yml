@@ -1,0 +1,16 @@
+---
+# create standard jmx template
+
+- name: Create extensions diretory
+  file:
+    path: "{{ agent_downloads_path }}newrelic/extensions"
+    state: directory
+    mode: "0755"
+
+- name: Import JMX template
+  file:
+    src: jmx_template.yml.j2
+    dest: "{{ agent_downloads_path }}newrelic/extensions"
+    owner: "{{ agent_user }}"
+    group: "{{ agent_user }}"
+    mode: "0775"

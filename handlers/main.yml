@@ -1,0 +1,9 @@
+---
+
+#handlers for the weblogic start/stop
+
+- name: stop Weblogic
+  command: {{ control_script_path }} stop
+
+- name: start Weblogic
+  command: {{ control_script_path }} start

@@ -1,0 +1,36 @@
+name: WeblogicStandard
+version: 1.0
+enabled: true
+jmx:
+  - object_name: com.bea:name=ThreadPoolRuntime,Type=ThreadPoolRuntime
+    metrics:
+      - attributes: PendingUserRequestCount, HoggingThreadCount, QueueLength, Throughput, ExecuteThreadIdleCount, ExecuteThreadTotalCount, StandbyThreadCount
+        type: monotonically_increasing
+  - object_name: com.bea:name=*, Type=JDBCConnectionPoolRuntime
+    metrics:
+      - attributes: MaxCapacity, ActiveConnectionsCurrentCount, WaitingForConnectionCurrentCount
+        type: simple
+  - object_name: com.bea:name=ClusterRuntime
+    metrics:
+      - attributes: AliveServerCount
+        type: simple
+  - object_name: com.bea:name=WorkManagerRuntime
+    metrics:
+      - attributes: PendingRequests, StuckThreadCount
+        type: simple
+  - object_name: com.bea:name=ServerRuntime
+    metrics:
+      - attributes: OpenSocketsCurrentCount
+        type: monotonically_increasing
+  - object_name: com.bea:name=JrockitRuntime
+    metrics:
+      - attributes: HeapFreeCurrent, JvmProcessorLoad, TotalNumberOfThreads
+        type: simple
+  - object_name: com.bea:name=JVMRuntime
+    metrics:
+      - attributes: HeapFreeCurrent, HeapSizeCurrent, HeapSizeUsed
+        type: simple
+  - object_name: com.bea:name=ServerRuntime
+    metrics:
+      - attributes: State
+        type: simple

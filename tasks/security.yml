@@ -1,0 +1,13 @@
+---
+
+#add newrelic trust
+- name: Trust New Relic in weblogic.policy
+  blockinfile:
+    path: /cb/bin/linux/bea/server/10.3.6.0.170117/wlserver_10.3/server/lib/weblogic.policy
+    marker: "##NEWRELIC TRUST##"
+    insertafter: "string_in_file"
+    block: |
+      grant codeBase "file:{{ agent_download_path }}/newrelic/-" {
+      permission java.security.AllPermission;
+      };
+  when: weblogic_policy.stat.exists == True

@@ -1,0 +1,60 @@
+---
+# tasks file for ansible-newrelic_java_agent-role
+
+- name: Download New Relic Java Agent
+  get_url:
+    url: "{{ java_agent_download_url }}/{{ java_agent_version }}/newrelic-java.zip"
+    dest: "{{ agent_download_path }}"
+    mode: "0766"
+  register: result_of_download
+  tags:
+    - new-relic
+
+- name: Remove the old newrelic directory when a new file has been downloaded
+  file:
+    path: "{{ agent_download_path }}/newrelic"
+    state: absent
+  when: result_of_download.changed == True
+  tags:
+    - new-relic
+
+- name: Unzip the newrelic java agent in application root path
+  unarchive:
+    src: "{{ agent_download_path }}/newrelic-java.zip"
+    dest: "{{ agent_download_path }}"
+    copy: false
+    mode: "0766"
+    list_files: yes
+    owner: "{{ agent_user }}"
+  when: result_of_download.changed == True
+  tags:
+    - new-relic
+
+- name: Set up the Newrelic config file
+  template:
+    src: "templates/newrelic.yml.j2"
+    dest: "{{ agent_download_path }}/newrelic/newrelic.yml"
+    owner: "{{ agent_user }}"
+    group: "{{ agent_user }}"
+    mode: "0775"
+  notify: stop Weblogic
+  tags:
+    - new-relic
+
+- name: Add newrelic.jar to WL Startup
+  lineinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: "export JAVA_OPTIONS=\"$JAVA_OPTIONS -javaagent:{{ agent_download_path }}/newrelic/newrelic.jar\""
+  notify: start Weblogic
+  tags:
+    - new-relic
+
+- stat:
+    path: /cb/bin/linux/bea/server/10.3.6.0.170117/wlserver_10.3/server/lib/weblogic.policy
+  register: weblogic_policy
+
+- include: security.yml
+  when: weblogic_policy.stat.exists == True
+
+- include: jmx.yml
+  when: include_jmx_metrics == True
