@@ -2,7 +2,7 @@
 # defaults file for ansible-newrelic_java_agent-role
 
 java_agent_download_url: http://download.newrelic.com/newrelic/java-agent/newrelic-agent
-newrelic_license_key: 09192110a9b35648b561c33344b5c91b5bb2b83c
+newrelic_license_key: 'license_key_here'
 agent_version: current
 agent_user: root
 agent_app_name: AWS-Weblogic-Test
